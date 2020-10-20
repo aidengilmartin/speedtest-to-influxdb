@@ -37,8 +37,8 @@ def format_for_influx(cliout):
             'measurement': 'ping',
             'time': data['timestamp'],
             'fields': {
-                'jitter': data['ping']['jitter'],
-                'latency': data['ping']['latency']
+                'jitter': float(data['ping']['jitter']),
+                'latency': float(data['ping']['latency'])
             }
         },
         {
@@ -65,11 +65,11 @@ def format_for_influx(cliout):
             'measurement': 'packetLoss',
             'time': data['timestamp'],
             'fields': {
-                'packetLoss': data['packetLoss']
+                'packetLoss': float(data['packetLoss'])
             }
         }
     ]
-
+            
     return influx_data
 
 
