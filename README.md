@@ -20,7 +20,7 @@ Be aware that this script will automatically accept the license and GDPR stateme
 
 2. Install the InfluxDB client for library from Python.
 
-    `pip install influxdb`
+    `pip3 install influxdb`
 
 3. Run the script.
 
@@ -35,4 +35,34 @@ Be aware that this script will automatically accept the license and GDPR stateme
 2. Run the container.
 
     `docker run -d --name speedtest-influx aidengilmartin/speedtest-influx`
+
+## Environment Variables
+
+Use OS or Docker environmet variables to configure the program run.
+
+Example: `docker run -d --env DB_ADDRESS= influx_db --env TEST_INTERVAL=120 --name speedtest-influx aidengilmartin/speedtest-influx`
+### InfluxDB Settings
+
+| Variable          | Default Value        | Informations                                                 |
+|:------------------|:---------------------|:-------------------------------------------------------------|
+| DB_ADDRESS        | db_hostname.network  | FQDN of InfluxDB Server                                      |
+| DB_PORT           | 8086                 | Port Number of InfluxDB Server                               |
+| DB_USER           | db_username          | InfluxDB user name                                           |
+| DB_PASSWORD       | db_password          | InfluxDB password                                            |
+| DB_DATABASE       | speedtest_db         | InfluxDB database name                                       |
+| DB_RETRY_INVERVAL | 60                   | Time before retrying a failed data upload.                   |
+
+
+### Speedtest Settings
+
+| Variable           | Default Value          | Informations                                               |
+|:-------------------|:-----------------------|:-----------------------------------------------------------|
+| TEST_INTERVAL      | 1800                   | Time between tests (in seconds).                           |
+| TEST_FAIL_INTERVAL | 60                     | Time before retrying a failed Speedtest (in seconds).      |
+
+### Loglevel Settings
+
+| Variable         | Default Value          | Informations                                                                                  |
+|:-----------------|:-----------------------|:----------------------------------------------------------------------------------------------|
+| PRINT_DATA       | False                  | Print Test Data in Log (True or False)                                                        | 
 
