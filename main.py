@@ -1,30 +1,39 @@
 import time
 import json
 import subprocess
+import os
 
 from influxdb import InfluxDBClient
+from datetime import datetime
 
 # InfluxDB Settings
-DB_ADDRESS = 'db_hostname.network'
-DB_PORT = 8086
-DB_USER = 'db_username'
-DB_PASSWORD = 'db_password'
-DB_DATABASE = 'speedtest_db'
-DB_RETRY_INVERVAL = 60 # Time before retrying a failed data upload.
+DB_ADDRESS = os.environ.get('DB_ADDRESS', 'db_hostname.network')
+DB_PORT = os.environ.get('DB_PORT', 8086)
+DB_USER = os.environ.get('DB_PORT', 'db_username')
+DB_PASSWORD = os.environ.get('DB_PASSWORD', 'db_password')
+DB_DATABASE = os.environ.get('DB_DATABASE', 'speedtest_db')
+DB_RETRY_INVERVAL = int(os.environ.get('DB_RETRY_INVERVAL', 60)) # Time before retrying a failed data upload.
 
 # Speedtest Settings
-TEST_INTERVAL = 1800  # Time between tests (in seconds).
-TEST_FAIL_INTERVAL = 60  # Time before retrying a failed Speedtest (in seconds).
+TEST_INTERVAL = int(os.environ.get('TEST_INTERVAL', 1800))  # Time between tests (in seconds).
+TEST_FAIL_INTERVAL = int(os.environ.get('TEST_FAIL_INTERVAL', 60))  # Time before retrying a failed Speedtest (in seconds).
+
+PRINT_DATA = os.environ.get('PRINT_DATA', False) 
 
 influxdb_client = InfluxDBClient(
     DB_ADDRESS, DB_PORT, DB_USER, DB_PASSWORD, None)
 
+def str2bool(v):
+  return v.lower() in ("yes", "true", "t", "1")
+
+def logger(level, message):
+    print(level, ":", datetime.now().strftime("%d/%m/%Y %H:%M:%S"), ":", message)
 
 def init_db():
     try:
         databases = influxdb_client.get_list_database()
     except:
-        print("Error: Unable to get list of databases")
+        logger("Error", "Unable to get list of databases")
         raise RuntimeError("No DB connection") from error
     else:
         if len(list(filter(lambda x: x['name'] == DB_DATABASE, databases))) == 0:
@@ -70,11 +79,10 @@ def format_for_influx(cliout):
             'measurement': 'packetLoss',
             'time': data['timestamp'],
             'fields': {
-                'packetLoss': float(data['packetLoss'])
+                'packetLoss': float(data.get('packetLoss', 0.0))
             }
         }
     ]
-            
     return influx_data
 
 
@@ -85,12 +93,11 @@ def main():
         try:
             init_db()  # Setup the database if it does not already exist.
         except:
-            print("Error: DB initialization error")
-            time.sleep(DB_RETRY_INVERVAL)
+            logger("Error", "DB initialization error")
+            time.sleep(int(DB_RETRY_INVERVAL))
         else:
-            print("Info: DB initialization complete")
+            logger("Info", "DB initialization complete")
             db_initialized = True
-        
         
     while (1):  # Run a Speedtest and send the results to influxDB indefinitely.
         speedtest = subprocess.run(
@@ -98,21 +105,23 @@ def main():
 
         if speedtest.returncode == 0:  # Speedtest was successful.
             data = format_for_influx(speedtest.stdout)
-            print("Info: Speedtest successful")
+            logger("Info", "Speedtest successful")
             try:
                 if influxdb_client.write_points(data) == True:
-                    print("Info: Data written to DB successfully")
-                    time.sleep(TEST_INTERVAL)
+                   logger("Info", "Data written to DB successfully")
+                   if str2bool(PRINT_DATA) == True:
+                      logger("Info", data)
+                   time.sleep(TEST_INTERVAL)
             except:
-                print("Error: Data write to DB failed")
+                logger("Error", "Data write to DB failed - Why")
                 time.sleep(TEST_FAIL_INTERVAL)
         else:  # Speedtest failed.
-            print("Error: Speedtest failed")
-            print(speedtest.stderr)
-            print(speedtest.stdout)
+            logger("Error", "Speedtest failed")
+            logger("Error", speedtest.stderr)
+            logger("Info", speedtest.stdout)
             time.sleep(TEST_FAIL_INTERVAL)
 
 
 if __name__ == '__main__':
-    print('Speedtest CLI Data Logger to InfluxDB')
+    logger('Info', 'Speedtest CLI Data Logger to InfluxDB started')
     main()
