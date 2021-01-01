@@ -1,0 +1,42 @@
+version: '3.3'
+services:
+
+  speedtest:
+    container_name: speedtest
+    build: .
+    restart: unless-stopped
+    env_file:
+      - ./docker_env/speedtest.env
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - influxdb
+
+  influxdb:
+    container_name: influxdb
+    image: "influxdb:latest"
+    restart: unless-stopped
+    env_file:
+      - ./docker_env/influxdb.env
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - influxdb_data:/var/lib/influxdb
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:master
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    env_file:
+      - ./docker_env/grafana.env
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - grafana_data:/var/lib/grafana
+      - grafana_log:/var/log/grafana
+
+
+volumes:
+  influxdb_data:
+  grafana_data:
+  grafana_log:

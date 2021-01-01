@@ -18,7 +18,7 @@ DB_RETRY_INVERVAL = int(os.environ.get('DB_RETRY_INVERVAL', 60)) # Time before r
 TEST_INTERVAL = int(os.environ.get('TEST_INTERVAL', 1800))  # Time between tests (in seconds).
 TEST_FAIL_INTERVAL = int(os.environ.get('TEST_FAIL_INTERVAL', 60))  # Time before retrying a failed Speedtest (in seconds).
 
-PRINT_DATA = os.environ.get('PRINT_DATA', False) 
+PRINT_DATA = os.environ.get('PRINT_DATA', "False") # Do you want to see the results in your logs? Type must be str. Will be converted to bool.
 
 influxdb_client = InfluxDBClient(
     DB_ADDRESS, DB_PORT, DB_USER, DB_PASSWORD, None)
@@ -113,7 +113,7 @@ def main():
                       logger("Info", data)
                    time.sleep(TEST_INTERVAL)
             except:
-                logger("Error", "Data write to DB failed - Why")
+                logger("Error", "Data write to DB failed")
                 time.sleep(TEST_FAIL_INTERVAL)
         else:  # Speedtest failed.
             logger("Error", "Speedtest failed")

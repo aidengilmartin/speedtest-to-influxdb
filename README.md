@@ -24,7 +24,7 @@ Be aware that this script will automatically accept the license and GDPR stateme
 
 3. Run the script.
 
-    `python3 ./main.py`
+    `python3 ./speedtest2influx.py`
 
 ### 2. Run with Docker or Podman
 
@@ -35,6 +35,22 @@ Be aware that this script will automatically accept the license and GDPR stateme
 2. Run the container.
 
     `docker run -d --name speedtest-influx aidengilmartin/speedtest-influx`
+
+3. Run the full stack with docker-compose
+
+    In the docker_env/ folder you can edit the environment variables of the docker container (see below, [grafana](https://grafana.com/docs/grafana/latest/installation/docker/) and [influx](https://hub.docker.com/_/influxdb)). 
+
+    `docker-compose up -d`
+
+    Login to the Grafana Dashboard (admin/admin) and create a datasource. 
+    - Type: `InfluxDB`
+    - Name: `speedtests`
+    - HTTP - URL: `http://influxdb:8086`
+    - InfluxDB Details - Database: `speedtest_db`
+    - InfluxDB Details - User: `db_username`
+    - InfluxDB Details - Password: `db_password`
+
+    Import the `grafana_dashboard_template.json` template as a new dashboard.
 
 ## Environment Variables
 

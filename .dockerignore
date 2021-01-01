@@ -2,3 +2,5 @@
 Dockerfile
 *~
 README.md
+docker_env/
+grafana_dashboard_template.json
