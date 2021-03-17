@@ -12,6 +12,49 @@ Adjust the InfluxDB connection settings at the top of `main.py` to fit your setu
 
 Be aware that this script will automatically accept the license and GDPR statement so that it can run non-interactively. Make sure you agree with them before running.
 
+## Configuring the script
+
+The InfluxDB connection settings are controlled by environment variables.
+
+The variables available are:
+- INFLUX_DB_ADDRESS = 192.168.1.xxx
+- INFLUX_DB_PORT = 8086
+- INFLUX_DB_USER = user
+- INFLUX_DB_PASSWORD = pass
+- INFLUX_DB_DATABASE = speedtest
+- INFLUX_DB_TAGS = *comma seperated list of tags. See below for options*
+- SPEEDTEST_INTERVAL = 60
+- SPEEDTEST_FAIL_INTERVAL = 5
+
+### Variable Notes
+- Intervals are in minutes. *Script will convert it to seconds.*
+- If any variables are not needed, don't declare them. Functions will operate with or without most variables. 
+- Tags should be input without quotes. *INFLUX_DB_TAGS = isp, interface, external_ip, server_name, speedtest_url*
+  
+### Tag Options
+The Ookla speedtest app provides a nice set of data beyond the upload and download speed. The list is below. 
+
+| Tag Name 	| Description 	|
+|-	|-	|
+| isp 	| Your connections ISP 	|
+| interface 	| Your devices connection interface 	|
+| internal_ip 	| Your container or devices IP address 	|
+| interface_mac 	| Mac address of your devices interface 	|
+| vpn_enabled 	| Determines if VPN is enabled or not? I wasn't sure what this represented 	|
+| external_ip 	| Your devices external IP address 	|
+| server_id 	| The Speedtest ID of the server that  was used for testing 	|
+| server_name 	| Name of the Speedtest server used  for testing 	|
+| server_country 	| Country where the Speedtest server  resides 	|
+| server_location | Location where the Speedtest server  resides  |
+| server_host 	| Hostname of the Speedtest server 	|
+| server_port 	| Port used by the Speedtest server 	|
+| server_ip 	| Speedtest server's IP address 	|
+| speedtest_id 	| ID of the speedtest results. Can be  used on their site to see results 	|
+| speedtest_url 	| Link to the testing results. It provides your results as it would if you tested on their site.  	|
+
+### Additional Notes
+Be aware that this script will automatically accept the license and GDPR statement so that it can run non-interactively. Make sure you agree with them before running.
+
 ### 1. No Container
 
 1. [Install the Speedtest CLI application by Ookla.](https://www.speedtest.net/apps/cli)
