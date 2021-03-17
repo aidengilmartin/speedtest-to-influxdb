@@ -132,7 +132,7 @@ def format_for_influx(cliout):
 def main():
     db_initialized = False
     
-    while(db_initialized == False): 
+    if(db_initialized == False): 
         try:
             init_db()  # Setup the database if it does not already exist.
         except:
@@ -142,7 +142,7 @@ def main():
             logger("Info", "DB initialization complete")
             db_initialized = True
         
-    while True:  # Run a Speedtest and send the results to influxDB indefinitely.
+    if True:  # Run a Speedtest and send the results to influxDB indefinitely.
         logger("Info", "Speedtest Started...")
         speedtest = subprocess.run(
             ["speedtest", "--accept-license", "--accept-gdpr", "-f", "json"], capture_output=True)
