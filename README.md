@@ -30,11 +30,12 @@ The variables available are:
 - Intervals are in minutes. *Script will convert it to seconds.*
 - If any variables are not needed, don't declare them. Functions will operate with or without most variables. 
 - Tags should be input without quotes. *INFLUX_DB_TAGS = isp, interface, external_ip, server_name, speedtest_url*
-
-###
   
 ### Tag Options
 The Ookla speedtest app provides a nice set of data beyond the upload and download speed. The list is below. 
+
+### Configure Tags
+To add tags to the system, navigate to tags.json and add the desired tags into the string. All items must be seperated by a comma but spaces are not needed.
 
 | Tag Name 	| Description 	|
 |-	|-	|
