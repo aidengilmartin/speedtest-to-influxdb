@@ -82,3 +82,6 @@ Example: `docker run -d --env DB_ADDRESS= influx_db --env TEST_INTERVAL=120 --na
 |:-----------------|:-----------------------|:----------------------------------------------------------------------------------------------|
 | PRINT_DATA       | False                  | Print Test Data in Log (True or False)                                                        | 
 
+
+This repo uses code from both the main fork and the following fork and accounts for the changes made since its creation.
+https://github.com/breadlysm/speedtest-to-influxdb
