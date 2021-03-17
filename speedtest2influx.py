@@ -106,15 +106,15 @@ def main():
 
         if speedtest.returncode == 0:  # Speedtest was successful.
             data = format_for_influx(speedtest.stdout)
-            logger("Info", "Speedtest successful!")
+            logger("Info", "Speedtest successful")
             try:
                 if influxdb_client.write_points(data) == True:
-                   logger("Info", "Data written to DB successfully.")
+                   logger("Info", "Data written to DB successfully")
                    if str2bool(PRINT_DATA) == True:
                       logger("Info", data)
                    time.sleep(TEST_INTERVAL)
             except:
-                logger("\nError\n", "\nData write to DB failed\n")
+                logger("Error", "Data write to DB failed")
                 time.sleep(TEST_FAIL_INTERVAL)
         else:  # Speedtest failed.
             logger("Error", "Speedtest failed")
