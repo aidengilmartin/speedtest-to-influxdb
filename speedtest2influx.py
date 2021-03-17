@@ -43,6 +43,38 @@ def init_db():
             influxdb_client.switch_database(DB_DATABASE)  # Switch to if does exist.
 
 
+
+def tag_selection(data):
+    tags = DB_TAGS
+    if tags is None:
+        return None
+    # tag_switch takes in _data and attaches CLIoutput to more readable ids
+    tag_switch = {
+        'isp': data['isp'],
+        'interface': data['interface']['name'],
+        'internal_ip': data['interface']['internalIp'],
+        'interface_mac': data['interface']['macAddr'],
+        'vpn_enabled': (False if data['interface']['isVpn'] == 'false' else True),
+        'external_ip': data['interface']['externalIp'],
+        'server_id': data['server']['id'],
+        'server_name': data['server']['name'],
+        'server_location': data['server']['location'],
+        'server_country': data['server']['country'],
+        'server_host': data['server']['host'],
+        'server_port': data['server']['port'],
+        'server_ip': data['server']['ip'],
+        'speedtest_id': data['result']['id'],
+        'speedtest_url': data['result']['url']
+    }
+    
+    options = {}
+    tags = tags.split(',')
+    for tag in tags:
+        # split the tag string, strip and add selected tags to {options} with corresponding tag_switch data
+        tag = tag.strip()
+        options[tag] = tag_switch[tag]
+    return options
+
 def format_for_influx(cliout):
     data = json.loads(cliout)
     # There is additional data in the speedtest-cli output but it is likely not necessary to store.
@@ -83,7 +115,13 @@ def format_for_influx(cliout):
             }
         }
     ]
-    return influx_data
+    tags = tag_selection(data)
+    if tags is None:
+        return influx_data
+    else:
+        for measurement in influx_data:
+            measurement['tags'] = tags
+        return influx_data
 
 
 def main():
