@@ -4,7 +4,7 @@ This is a small Python script that will continuously run the Speedtest CLI appli
 
 You may want to do this so that you can track your internet connections consistency over time. Using Grafana you can view and explore this data easily.
 
-![Grafana Dashboard](https://i.imgur.com/8cUdMy7.png)
+![Grafana Dashboard](https://github.com/M-Desormeaux/speedtest-to-influxdb/blob/master/dashboard.png)
 
 ## Using the script
 
@@ -77,7 +77,16 @@ Be aware that this script will automatically accept the license and GDPR stateme
 
 2. Run the container.
 
-    `docker run -d --name speedtest-influx aidengilmartin/speedtest-influx`
+    ```
+    docker run -d --name speedtest-influx \
+    -e 'INFLUX_DB_ADDRESS'='_influxdb_host_' \
+    -e 'INFLUX_DB_PORT'='8086' \
+    -e 'INFLUX_DB_USER'='_influx_user_' \
+    -e 'INFLUX_DB_PASSWORD'='_influx_pass_' \
+    -e 'INFLUX_DB_DATABASE'='speedtest' \
+    -e 'SPEEDTEST_INTERVAL'='1800' \
+    -e 'SPEEDTEST_FAIL_INTERVAL'='60'  \
+    ```
 
 3. Run the full stack with docker-compose
 
