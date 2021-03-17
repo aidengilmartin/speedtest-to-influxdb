@@ -30,6 +30,8 @@ The variables available are:
 - Intervals are in minutes. *Script will convert it to seconds.*
 - If any variables are not needed, don't declare them. Functions will operate with or without most variables. 
 - Tags should be input without quotes. *INFLUX_DB_TAGS = isp, interface, external_ip, server_name, speedtest_url*
+
+###
   
 ### Tag Options
 The Ookla speedtest app provides a nice set of data beyond the upload and download speed. The list is below. 
@@ -55,7 +57,7 @@ The Ookla speedtest app provides a nice set of data beyond the upload and downlo
 ### Additional Notes
 Be aware that this script will automatically accept the license and GDPR statement so that it can run non-interactively. Make sure you agree with them before running.
 
-### 1. No Container
+## 1. Run bare
 
 1. [Install the Speedtest CLI application by Ookla.](https://www.speedtest.net/apps/cli)
 
@@ -69,7 +71,7 @@ Be aware that this script will automatically accept the license and GDPR stateme
 
     `python3 ./speedtest2influx.py`
 
-### 2. Run with Docker or Podman
+## 2. Run with Docker or Podman
 
 1. Build the container.
 

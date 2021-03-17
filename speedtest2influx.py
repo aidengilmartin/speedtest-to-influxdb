@@ -13,7 +13,7 @@ DB_USER = os.environ.get('DB_USER', 'db_username')
 DB_PASSWORD = os.environ.get('DB_PASSWORD', 'db_password')
 DB_DATABASE = os.environ.get('DB_DATABASE', 'speedtest_db')
 DB_RETRY_INVERVAL = int(os.environ.get('DB_RETRY_INVERVAL', 60)) # Time before retrying a failed data upload.
-DB_TAGS = os.environ.get('INFLUX_DB_TAGS')
+# DB_TAGS = os.environ.get('INFLUX_DB_TAGS')
 
 # Speedtest Settings
 TEST_INTERVAL = int(os.environ.get('TEST_INTERVAL', 1800))  # Time between tests (in seconds).
@@ -46,7 +46,11 @@ def init_db():
 
 
 def tag_selection(data):
-    tags = DB_TAGS
+    # tags = DB_TAGS
+    # Loads tags.json directly.
+    with open('tags.json') as json_file:
+        data = json.load(json_file)
+        tags = data['INFLUX_DB_TAG']
     if tags is None:
         return None
     # tag_switch takes in _data and attaches CLIoutput to more readable ids

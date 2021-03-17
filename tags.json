@@ -1,0 +1,4 @@
+{
+    "INFLUX_DB_TAG":
+    "isp, internal_ip, interface_mac"
+}
