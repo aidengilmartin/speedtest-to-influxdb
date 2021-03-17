@@ -34,7 +34,7 @@ The variables available are:
 ### Tag Options
 The Ookla speedtest app provides a nice set of data beyond the upload and download speed. The list is below. 
 
-### Configure Tags
+### Configuring Tags
 To add tags to the system, navigate to tags.json and add the desired tags into the string. All items must be seperated by a comma but spaces are not needed.
 
 | Tag Name 	| Description 	|
