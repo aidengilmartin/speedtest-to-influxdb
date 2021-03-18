@@ -1,19 +1,29 @@
 import time
 import json
 import subprocess
-import os
+# import os
 
 from influxdb import InfluxDBClient
 from datetime import datetime
 
 # InfluxDB Settings
-DB_ADDRESS = os.environ.get('DB_ADDRESS', 'db_hostname.network')
-DB_PORT = os.environ.get('DB_PORT', 8086)
-DB_USER = os.environ.get('DB_USER', 'db_username')
-DB_PASSWORD = os.environ.get('DB_PASSWORD', 'db_password')
-DB_DATABASE = os.environ.get('DB_DATABASE', 'speedtest_db')
-DB_RETRY_INVERVAL = int(os.environ.get('DB_RETRY_INVERVAL', 60)) # Time before retrying a failed data upload.
-# DB_TAGS = os.environ.get('INFLUX_DB_TAGS')
+# DB_ADDRESS = os.environ.get('DB_ADDRESS', 'db_hostname.network')
+# DB_PORT = os.environ.get('DB_PORT', 8086)
+# DB_USER = os.environ.get('DB_USER', 'db_username')
+# DB_PASSWORD = os.environ.get('DB_PASSWORD', 'db_password')
+# DB_DATABASE = os.environ.get('DB_DATABASE', 'speedtest_db')
+# DB_RETRY_INVERVAL = int(os.environ.get('DB_RETRY_INVERVAL', 60)) # Time before retrying a failed data upload.
+# Loads tags.json directly.
+with open('tags.json') as json_file:
+    data = json.load(json_file)
+    DB_TAGS = data['DB_TAG']
+    DB_ADDRESS = data['DB_ADDRESS']
+    DB_PORT = data['DB_PORT']
+    DB_USER = data['DB_USER']
+    DB_PASSWORD = data['DB_PASSWORD']
+    DB_DATABASE = data['DB_DATABASE']
+    DB_RETRY_INVERVAL = data['DB_RETRY_INVERVAL']
+
 
 # Speedtest Settings
 TEST_INTERVAL = int(os.environ.get('TEST_INTERVAL', 1800))  # Time between tests (in seconds).
@@ -35,7 +45,7 @@ def init_db():
         databases = influxdb_client.get_list_database()
     except:
         logger("Error", "Unable to get list of databases")
-        raise RuntimeError("No DB connection") from error
+        raise RuntimeError("No DB connection")
     else:
         if len(list(filter(lambda x: x['name'] == DB_DATABASE, databases))) == 0:
             influxdb_client.create_database(
@@ -46,12 +56,8 @@ def init_db():
 
 
 def tag_selection(data):
-    # tags = DB_TAGS
-    # Loads tags.json directly.
-    with open('tags.json') as json_file:
-        data = json.load(json_file)
-        tags = data['INFLUX_DB_TAG']
-    if tags is None:
+    tags = DB_TAGS
+    if tags is None or tags == []:
         return None
     # tag_switch takes in _data and attaches CLIoutput to more readable ids
     tag_switch = {
@@ -73,7 +79,6 @@ def tag_selection(data):
     }
     
     options = {}
-    tags = tags.split(',')
     for tag in tags:
         # split the tag string, strip and add selected tags to {options} with corresponding tag_switch data
         tag = tag.strip()

@@ -1,4 +1,9 @@
 {
-    "INFLUX_DB_TAG":
-    "isp, internal_ip, interface_mac"
+    "DB_TAG": [],
+    "DB_ADDRESS": "",
+    "DB_PORT": 8086,
+    "DB_USER": "",
+    "DB_PASSWORD": "",
+    "DB_DATABASE": "speedtest_db",
+    "DB_RETRY_INTERVAL": 60
 }
