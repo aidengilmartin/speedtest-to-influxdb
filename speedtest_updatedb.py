@@ -12,7 +12,6 @@ from datetime import datetime
 # DB_USER = os.environ.get('DB_USER', 'db_username')
 # DB_PASSWORD = os.environ.get('DB_PASSWORD', 'db_password')
 # DB_DATABASE = os.environ.get('DB_DATABASE', 'speedtest_db')
-# DB_RETRY_INVERVAL = int(os.environ.get('DB_RETRY_INVERVAL', 60)) # Time before retrying a failed data upload.
 # Loads tags.json directly.
 with open('tags.json') as json_file:
     data = json.load(json_file)
@@ -22,12 +21,10 @@ with open('tags.json') as json_file:
     DB_USER = data['DB_USER']
     DB_PASSWORD = data['DB_PASSWORD']
     DB_DATABASE = data['DB_DATABASE']
-    DB_RETRY_INVERVAL = data['DB_RETRY_INVERVAL']
-
 
 # Speedtest Settings
-TEST_INTERVAL = int(os.environ.get('TEST_INTERVAL', 1800))  # Time between tests (in seconds).
-TEST_FAIL_INTERVAL = int(os.environ.get('TEST_FAIL_INTERVAL', 60))  # Time before retrying a failed Speedtest (in seconds).
+TEST_INTERVAL = 1800  # Time between tests (in seconds).
+TEST_FAIL_INTERVAL = 60  # Time before retrying a failed Speedtest (in seconds).
 
 PRINT_DATA = os.environ.get('PRINT_DATA', "False") # Do you want to see the results in your logs? Type must be str. Will be converted to bool.
 
@@ -48,8 +45,7 @@ def init_db():
         raise RuntimeError("No DB connection")
     else:
         if len(list(filter(lambda x: x['name'] == DB_DATABASE, databases))) == 0:
-            influxdb_client.create_database(
-                DB_DATABASE)  # Create if does not exist.
+            influxdb_client.create_database(DB_DATABASE)  # Create if does not exist.
         else:
             influxdb_client.switch_database(DB_DATABASE)  # Switch to if does exist.
 
@@ -137,20 +133,19 @@ def format_for_influx(cliout):
 def main():
     db_initialized = False
     
-    if(db_initialized == False): 
+    while db_initialized == False: 
         try:
             init_db()  # Setup the database if it does not already exist.
         except:
             logger("Error", "DB initialization error")
-            time.sleep(int(DB_RETRY_INVERVAL))
+            time.sleep(60)
         else:
             logger("Info", "DB initialization complete")
             db_initialized = True
         
     if True:  # Run a Speedtest and send the results to influxDB indefinitely.
         logger("Info", "Speedtest Started...")
-        speedtest = subprocess.run(
-            ["speedtest", "--accept-license", "--accept-gdpr", "-f", "json"], capture_output=True)
+        speedtest = subprocess.run(["speedtest", "--accept-license", "--accept-gdpr", "-f", "json"], capture_output=True)
 
         if speedtest.returncode == 0:  # Speedtest was successful.
             data = format_for_influx(speedtest.stdout)
