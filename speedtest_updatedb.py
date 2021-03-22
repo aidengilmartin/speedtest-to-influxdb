@@ -15,12 +15,12 @@ from datetime import datetime
 # Loads tags.json directly.
 with open('tags.json') as json_file:
     data = json.load(json_file)
-    DB_TAGS = data['DB_TAG']
     DB_ADDRESS = data['DB_ADDRESS']
     DB_PORT = data['DB_PORT']
     DB_USER = data['DB_USER']
     DB_PASSWORD = data['DB_PASSWORD']
     DB_DATABASE = data['DB_DATABASE']
+    DB_TAGS = data['DB_TAG']
 
 # Speedtest Settings
 TEST_INTERVAL = 1800  # Time between tests (in seconds).
