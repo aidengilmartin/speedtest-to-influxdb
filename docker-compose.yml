@@ -14,7 +14,7 @@ services:
 
   influxdb:
     container_name: influxdb
-    image: "influxdb:latest"
+    image: "influxdb:1.8"
     restart: unless-stopped
     env_file:
       - ./docker_env/influxdb.env
