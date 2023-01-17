@@ -14,7 +14,7 @@ RUN apt-get update && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 379CE192D401AB61
 
 # get speedtest repo from ookla
-RUN curl -s https://install.speedtest.net/app/cli/install.deb.sh | bash
+RUN curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash
 
 RUN apt-get update && apt-get -q -y install speedtest && \
     apt-get -q -y autoremove && \
