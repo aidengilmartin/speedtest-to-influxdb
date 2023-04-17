@@ -8,6 +8,12 @@
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
@@ -15,16 +21,24 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 1,
+  "iteration": 1681741865555,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_SPEEDTESTS}",
+      "datasource": null,
       "decimals": null,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
       "fill": 2,
       "fillGradient": 0,
       "gridPos": {
@@ -33,6 +47,7 @@
         "x": 0,
         "y": 0
       },
+      "hiddenSeries": false,
       "id": 10,
       "legend": {
         "alignAsTable": true,
@@ -49,9 +64,10 @@
       "linewidth": 1,
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": true,
+      "pluginVersion": "8.2.0-33922pre",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -79,6 +95,7 @@
           "measurement": "download",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"speedtest_bucket\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"download\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"bandwidth\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field:\"Download\" }))\r\n  |> yield()",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -116,6 +133,7 @@
           "measurement": "upload",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"speedtest_bucket\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"upload\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"bandwidth\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field:\"Upload\" }))\r\n  |> yield()",
           "refId": "B",
           "resultFormat": "time_series",
           "select": [
@@ -182,7 +200,13 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_SPEEDTESTS}",
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
       "fill": 2,
       "fillGradient": 0,
       "gridPos": {
@@ -191,6 +215,7 @@
         "x": 12,
         "y": 0
       },
+      "hiddenSeries": false,
       "id": 12,
       "legend": {
         "alignAsTable": true,
@@ -206,9 +231,10 @@
       "linewidth": 1,
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.2.0-33922pre",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -236,6 +262,7 @@
           "measurement": "ping",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"speedtest_bucket\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ping\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"latency\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field:\"Latency\" }))\r\n  |> yield()",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -273,6 +300,7 @@
           "measurement": "ping",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "from(bucket: \"speedtest_bucket\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ping\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"jitter\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field:\"Jitter\" }))\r\n  |> yield()",
           "refId": "B",
           "resultFormat": "time_series",
           "select": [
@@ -334,17 +362,20 @@
       }
     }
   ],
-  "refresh": false,
-  "schemaVersion": 20,
+  "refresh": "",
+  "schemaVersion": 31,
   "style": "dark",
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {
+          "selected": false,
           "text": "speedtests",
           "value": "speedtests"
         },
+        "description": null,
+        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "speedtests",
