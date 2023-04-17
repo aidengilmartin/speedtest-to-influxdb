@@ -1,9 +1,11 @@
-version: '3.3'
+version: '3.6'
 services:
 
   speedtest:
     container_name: speedtest
     build: .
+    networks:
+      - speedtest-net
     restart: unless-stopped
     env_file:
       - ./docker_env/speedtest.env
@@ -14,7 +16,12 @@ services:
 
   influxdb:
     container_name: influxdb
-    image: "influxdb:1.8"
+    image: "influxdb:2.7.0"
+    hostname: influxdb.local
+    networks:
+       speedtest-net:
+          aliases:
+            - influxdb.local
     restart: unless-stopped
     env_file:
       - ./docker_env/influxdb.env
@@ -25,6 +32,8 @@ services:
   grafana:
     container_name: grafana
     image: grafana/grafana:master
+    networks:
+      - speedtest-net
     restart: unless-stopped
     ports:
       - 3000:3000
@@ -40,3 +49,6 @@ volumes:
   influxdb_data:
   grafana_data:
   grafana_log:
+
+networks:
+  speedtest-net:

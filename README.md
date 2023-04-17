@@ -20,7 +20,7 @@ Be aware that this script will automatically accept the license and GDPR stateme
 
 2. Install the InfluxDB client for library from Python.
 
-    `pip3 install influxdb`
+    `pip3 install influxdb-client`
 
 3. Run the script.
 
@@ -42,13 +42,16 @@ Be aware that this script will automatically accept the license and GDPR stateme
 
     `docker-compose up -d`
 
-    Login to the Grafana Dashboard (admin/admin) and create a datasource. 
+    Login to the Grafana Dashboard (admin/admin) and create a datasource.
     - Type: `InfluxDB`
     - Name: `speedtests`
+    - Query Language: `Flux`
     - HTTP - URL: `http://influxdb:8086`
-    - InfluxDB Details - Database: `speedtest_db`
-    - InfluxDB Details - User: `db_username`
-    - InfluxDB Details - Password: `db_password`
+    - Basic Auth Details - User: `myadminuser`
+    - Basic Auth Details - Password: `myadminpassword`
+    - InfluxDB Details - Organization: `init-org`
+    - InfluxDB Details - Token: `my-super-secret-auth-token`
+    - InfluxDB Details - Default Bucket: `speedtest_bucket`
 
     Import the `grafana_dashboard_template.json` template as a new dashboard.
 
@@ -56,16 +59,15 @@ Be aware that this script will automatically accept the license and GDPR stateme
 
 Use OS or Docker environmet variables to configure the program run.
 
-Example: `docker run -d --env DB_ADDRESS= influx_db --env TEST_INTERVAL=120 --name speedtest-influx aidengilmartin/speedtest-influx`
+Example: `docker run -d --env INFLUXDB_V2_URL=influx_db --env TEST_INTERVAL=120 --name speedtest-influx aidengilmartin/speedtest-influx`
 ### InfluxDB Settings
 
 | Variable          | Default Value        | Informations                                                 |
 |:------------------|:---------------------|:-------------------------------------------------------------|
-| DB_ADDRESS        | db_hostname.network  | FQDN of InfluxDB Server                                      |
-| DB_PORT           | 8086                 | Port Number of InfluxDB Server                               |
-| DB_USER           | db_username          | InfluxDB user name                                           |
-| DB_PASSWORD       | db_password          | InfluxDB password                                            |
-| DB_DATABASE       | speedtest_db         | InfluxDB database name                                       |
+| INFLUXDB_V2_URL   |                      | FQDN of InfluxDB Server                                      |
+| INFLUXDB_V2_ORG   |                      | InfluxDB organization name                                   |
+| INFLUXDB_V2_TOKEN |                      | InfluxDB token                                               |
+| DB_BUCKET         | speedtest_bucket     | InfluxDB bucket name                                         |
 | DB_RETRY_INVERVAL | 60                   | Time before retrying a failed data upload.                   |
 
 
@@ -78,7 +80,6 @@ Example: `docker run -d --env DB_ADDRESS= influx_db --env TEST_INTERVAL=120 --na
 
 ### Loglevel Settings
 
-| Variable         | Default Value          | Informations                                                                                  |
-|:-----------------|:-----------------------|:----------------------------------------------------------------------------------------------|
-| PRINT_DATA       | False                  | Print Test Data in Log (True or False)                                                        | 
-
+| Variable         | Default Value          | Informations                                 |
+|:-----------------|:-----------------------|:---------------------------------------------|
+| LOG_LEVEL        | INFO                   | Desired log level                            |

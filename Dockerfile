@@ -6,7 +6,7 @@ LABEL maintainer="Aiden Gilmartin" \
 # Install dependencies
 ENV DEBIAN_FRONTEND=noninteractive
 
-COPY requirements.txt /
+COPY requirements.txt /tmp/requirements.txt
 
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
@@ -17,10 +17,11 @@ RUN apt-get update && \
 RUN curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash
 
 RUN apt-get update && apt-get -q -y install speedtest && \
+    pip3 install -r /tmp/requirements.txt && \
+    rm -rf /tmp/requirements.txt && \
     apt-get -q -y autoremove && \
     apt-get -q -y clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    pip3 install -r /requirements.txt
+    rm -rf /var/lib/apt/lists/*
 
 # Final setup & execution
 COPY speedtest2influx.py /app/speedtest2influx.py
